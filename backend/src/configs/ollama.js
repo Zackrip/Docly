@@ -1,9 +1,11 @@
 import ollama from "ollama";
+import llm from "./llm.js";
 
+// Embeddings
 const embeddings = {
   embedQuery: async (text) => {
     const response = await ollama.embed({
-      model: "nomic-embed-text",
+      model: process.env.OLLAMA_EMBEDDING_MODEL,
       input: text,
     });
 
@@ -12,7 +14,7 @@ const embeddings = {
 
   embedDocuments: async (texts) => {
     const response = await ollama.embed({
-      model: "nomic-embed-text",
+      model: process.env.OLLAMA_EMBEDDING_MODEL,
       input: texts,
     });
 

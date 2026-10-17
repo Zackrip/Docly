@@ -13,7 +13,7 @@ const createVectorStore = async (documents) => {
   const collections = await qdrantClient.getCollections();
 
   const collectionExists = collections.collections.some(
-    (collection) => collection.name === COLLECTION_NAME
+    (collection) => collection.name === COLLECTION_NAME,
   );
 
   if (!collectionExists) {
@@ -26,9 +26,7 @@ const createVectorStore = async (documents) => {
   }
 
   // Get all chunk texts
-  const texts = documents.map(
-    (document) => document.pageContent
-  );
+  const texts = documents.map((document) => document.pageContent);
 
   console.log("Embedding chunks:", texts.length);
 
@@ -36,7 +34,7 @@ const createVectorStore = async (documents) => {
   const vectors = await ollama.embeddings.embedDocuments(texts);
 
   console.log("Embeddings received:", vectors.length);
-console.log("Vector dimension:", vectors[0]?.length);
+  console.log("Vector dimension:", vectors[0]?.length);
 
   if (!vectors?.length) {
     throw new Error("Ollama returned empty embeddings");
@@ -53,12 +51,13 @@ console.log("Vector dimension:", vectors[0]?.length);
 
       metadata: {
         ...document.metadata,
+        userId: document.metadata.userId,
+        documentId: document.metadata.documentId,
+        filename: document.metadata.filename,
         chunkIndex: index,
       },
     },
   }));
-
-
 
   // Store all points
   await qdrantClient.upsert(COLLECTION_NAME, {

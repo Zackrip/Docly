@@ -1,17 +1,20 @@
 import documentService from "../services/document.service.js";
 import storeDocuments from "../services/vector.service.js";
 import Document from "../models/document.model.js";
-import User from "../models/auth.model.js";
 
 const uploadDocument = async (req, res) => {
+  let document;
+
   try {
     if (!req.file) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Document file is required" });
+      return res.status(400).json({
+        success: false,
+        message: "Document file is required",
+      });
     }
 
-    const document = await Document.create({
+    // 1. Create the PostgreSQL document record.
+    document = await Document.create({
       userId: req.user.id,
       fileName: req.file.originalname,
       fileType: req.file.mimetype,
@@ -20,9 +23,24 @@ const uploadDocument = async (req, res) => {
       status: "processing",
     });
 
+    // 2. Extract text and split it into chunks.
     const result = await documentService.processDocument(req.file);
-    await storeDocuments(result.documents);
 
+    // 3. Attach trusted metadata to every chunk.
+    const chunksWithMetadata = result.documents.map((chunk) => ({
+      ...chunk,
+      metadata: {
+        ...chunk.metadata,
+        userId: req.user.id,
+        documentId: document.id,
+        filename: document.fileName,
+      },
+    }));
+
+    // 4. Generate embeddings and store chunks in Qdrant.
+    const storageResult = await storeDocuments(chunksWithMetadata);
+
+    // 5. Mark the document as successfully indexed.
     await document.update({ status: "processed" });
 
     return res.status(201).json({
@@ -32,11 +50,22 @@ const uploadDocument = async (req, res) => {
         documentId: document.id,
         fileName: result.fileName,
         fileType: result.fileType,
-        chunkCount: result.chunkCount,
+        chunkCount: storageResult.pointsStored,
         fileSize: document.fileSize,
       },
     });
   } catch (error) {
+    console.error("Document upload failed:", error);
+
+    // Mark the database record as failed if it was created.
+    if (document) {
+      try {
+        await document.update({ status: "failed" });
+      } catch (updateError) {
+        console.error("Failed to update document status:", updateError);
+      }
+    }
+
     return res.status(500).json({
       success: false,
       status: "failed",

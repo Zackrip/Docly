@@ -1,9 +1,9 @@
-import gemini from "../configs/gemini.js";
+import llm from "../configs/llm.js";
 
 const generateEmbeddings = async (documents) => {
   const texts = documents.map((doc) => doc.pageContent);
 
-  const embeddings = await gemini.embeddings.embedDocuments(texts);
+  const embeddings = await llm.embeddings.embedDocuments(texts);
 
   return embeddings;
 };

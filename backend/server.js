@@ -9,8 +9,8 @@ dotenv.config({ quiet: true });
 connectDB();
 await sequelize.sync();
 try {
+  
   const collections = await qdrantClient.getCollections();
-
   console.log("Qdrant connected ✅");
   console.log("Collections:", collections);
 } catch (error) {
