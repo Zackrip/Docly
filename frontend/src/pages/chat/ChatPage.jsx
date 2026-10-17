@@ -12,6 +12,8 @@ function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [asking, setAsking] = useState(false);
 
+  const [selectedDocumentId, setSelectedDocumentId] = useState(null);
+
   const chatEnd = useRef(null);
 
   useEffect(() => {
@@ -19,32 +21,56 @@ function ChatPage() {
   }, [messages]);
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file || uploading) return;
+
     setUploading(true);
     setUploadMsg("");
+
     const formData = new FormData();
     formData.append("document", file);
+
     try {
       const res = await api.post("/documents/upload", formData);
+
+      const documentId = res.data.data.documentId;
+
+      if (!documentId) {
+        throw new Error("Upload succeeded, but no document ID was returned.");
+      }
+
+      setSelectedDocumentId(documentId);
+
       setUploadMsg(
         `${res.data.data.fileName} uploaded (${res.data.data.chunkCount} chunks)`,
       );
+
       setFile(null);
     } catch (err) {
-      setUploadMsg(err.response?.data?.message || "Upload failed");
+      setUploadMsg(
+        err.response?.data?.message || err.message || "Upload failed",
+      );
+    } finally {
+      setUploading(false);
     }
-    setUploading(false);
   };
 
   const handleAsk = async (e) => {
     e.preventDefault();
+
     if (!question.trim() || asking) return;
+
     const q = question.trim();
+
     setQuestion("");
     setMessages((m) => [...m, { from: "you", text: q }]);
     setAsking(true);
+
     try {
-      const res = await api.post("/chat", { question: q });
+      const res = await api.post("/chat", {
+        question: q,
+        documentId: selectedDocumentId,
+      });
+
       setMessages((m) => [...m, { from: "ai", text: res.data.answer }]);
     } catch (err) {
       setMessages((m) => [
@@ -55,8 +81,9 @@ function ChatPage() {
             "Error: " + (err.response?.data?.message || "Something went wrong"),
         },
       ]);
+    } finally {
+      setAsking(false);
     }
-    setAsking(false);
   };
 
   return (
