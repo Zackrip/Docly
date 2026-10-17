@@ -10,11 +10,7 @@ import Eyes from "./components/landing/Eyes";
 
 import LocomotiveScroll from "locomotive-scroll";
 
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import ChatPage from "./pages/chat/ChatPage";
 
@@ -38,21 +34,18 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* Landing Page */}
         <Route
           path="/"
           element={
-            <PublicRoutes>
-              <div className="w-full min-h-screen text-white">
-                <Navbar />
-                <LandingPage />
-                <Marquee />
-                <About />
-                <Eyes />
-                <Footer />
-              </div>
-            </PublicRoutes>
+            <div className="w-full text-white">
+              <Navbar />
+              <LandingPage />
+              <Marquee />
+              <About />
+              <Eyes />
+              <Footer />
+            </div>
           }
         />
 
@@ -84,12 +77,8 @@ function App() {
             </ProtectedRoutes>
           }
         >
-          <Route
-            path="/ask-docly"
-            element={<ChatPage />}
-          />
+          <Route path="/ask-docly" element={<ChatPage />} />
         </Route>
-
       </Routes>
     </BrowserRouter>
   );

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # 📄 Docly
 
 ### AI-Powered Document Question Answering Platform
@@ -109,3 +110,4 @@ AI Answer
    │
    ▼
 React Chat Interface
+

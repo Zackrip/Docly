@@ -35,10 +35,7 @@ export function routeQuery({
   }
 
   // Explicit request to enrich document answers with outside context.
-  if (
-    documentSelected &&
-    (enrichDocument || ENRICHMENT_CUES.test(q))
-  ) {
+  if (documentSelected && (enrichDocument || ENRICHMENT_CUES.test(q))) {
     return "document_web";
   }
 

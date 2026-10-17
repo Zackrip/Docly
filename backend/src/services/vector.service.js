@@ -2,12 +2,12 @@ import ollama from "../configs/ollama.js";
 import qdrantClient from "../configs/qdrant.js";
 import dotenv from "dotenv";
 import crypto from "crypto";
+import ensureDocumentIndexes from "./qdrant-index.service.js";
 
 dotenv.config();
 
 const COLLECTION_NAME = "documents";
 const VECTOR_SIZE = 768;
-
 const createVectorStore = async (documents) => {
   // Check whether collection exists
   const collections = await qdrantClient.getCollections();
@@ -24,6 +24,9 @@ const createVectorStore = async (documents) => {
       },
     });
   }
+
+  // Qdrant Cloud requires indexes for filtered UUID payload fields.
+  await ensureDocumentIndexes();
 
   // Get all chunk texts
   const texts = documents.map((document) => document.pageContent);

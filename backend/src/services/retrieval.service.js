@@ -1,5 +1,6 @@
 import ollama from "../configs/ollama.js";
 import qdrantClient from "../configs/qdrant.js";
+import ensureDocumentIndexes from "./qdrant-index.service.js";
 
 const COLLECTION_NAME = "documents";
 
@@ -26,6 +27,7 @@ const searchVectorStore = async (query, k = 5, options = {}) => {
   }
 
   const queryVector = await createQueryEmbedding(query);
+  await ensureDocumentIndexes();
 
   const must = [
     {

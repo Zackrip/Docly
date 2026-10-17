@@ -5,7 +5,7 @@ const items = ["We are Docly", "✦", "RAG Powered", "✦", "Ask. Explore.", "�
 
 function Marquee() {
   return (
-    <div className="w-full py-20 bg-[#FF7518] overflow-hidden border-t border-b border-white/20">
+    <div className="w-full py-20 bg-[#FF6B35] overflow-hidden border-t border-b border-white/20">
       <div className="flex whitespace-nowrap">
         {[0, 1].map((copy) => (
           <motion.div
