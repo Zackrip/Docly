@@ -75,6 +75,29 @@ const uploadDocument = async (req, res) => {
   }
 };
 
+const getDocuments = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const documents = await Document.findAll({
+      where: { userId },
+      order: [["createdAt", "DESC"]],
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: documents,
+    });
+  } catch (error) {
+    console.error("Failed to fetch documents:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch documents",
+      error: error.message,
+    });
+  }
+};
+
 export default {
   uploadDocument,
+  getDocuments,
 };

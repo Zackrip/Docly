@@ -31,16 +31,16 @@ const askQuestion = async (req, res) => {
       }
     }
 
-    const result = await answerQuestion(question, {
+    const result = await answerQuestion(req.body.question, {
       userId: req.user.id,
-      documentId,
+      documentId: req.body.documentId,
     });
 
     return res.status(200).json({
       success: true,
-      question,
-      mode: result.mode,
-      answer: result.answer
+      answer: result.answer,
+      mode: result.mode ?? "document",
+      sources: result.sources ?? [],
     });
   } catch (error) {
     console.error("Chat error:", error);

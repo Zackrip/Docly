@@ -6,5 +6,6 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.post("/upload", authMiddleware, upload.single("document"), documentController.uploadDocument);
+router.get("/", authMiddleware, documentController.getDocuments);
 
 export default router;

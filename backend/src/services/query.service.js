@@ -63,12 +63,15 @@ const answerQuestion = async (question, options = {}) => {
         throw new Error("Authentication is required.");
       }
 
+      const result = await generateDocumentAnswer(question, {
+        userId,
+        documentId,
+      });
+
       return {
         mode,
-        answer: await generateDocumentAnswer(question, {
-          userId,
-          documentId,
-        }),
+        answer: result.answer,
+        sources: result.sources ?? [],
       };
 
     case "web":

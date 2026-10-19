@@ -10,11 +10,10 @@ const generate = async (question, options = {}) => {
 
   console.time("Document retrieval");
 
-  const documents = await searchDocuments.searchVectorStore(
-    question,
-    5,
-    { documentId, userId }
-  );
+  const documents = await searchDocuments.searchVectorStore(question, 5, {
+    documentId,
+    userId,
+  });
 
   console.timeEnd("Document retrieval");
 
@@ -23,15 +22,15 @@ const generate = async (question, options = {}) => {
   }
 
   const context = documents
-  .filter((doc) => doc.pageContent?.trim())
-  .map((doc, index) => `[D${index + 1}]\n${doc.pageContent}`)
-  .join("\n\n");
+    .filter((doc) => doc.pageContent?.trim())
+    .map((doc, index) => `[D${index + 1}]\n${doc.pageContent}`)
+    .join("\n\n");
 
-if (!context) {
-  return "I couldn't find relevant information in the selected document.";
-}
+  if (!context) {
+    return "I couldn't find relevant information in the selected document.";
+  }
 
- const prompt = `
+  const prompt = `
 You are Docly, an AI document assistant.
 
 Your task is to answer the user's question using the provided document excerpts.
@@ -68,15 +67,27 @@ Answer:
   console.timeEnd("LLM generation");
 
   const answer =
-    typeof response.content === "string"
-      ? response.content.trim()
-      : "";
+    typeof response.content === "string" ? response.content.trim() : "";
 
   if (!answer) {
-    return "I couldn't generate an answer from the document.";
+    return {
+      answer: "I couldn't find relevant information in the selected document.",
+      sources: [],
+    };
   }
 
-  return answer;
+  return {
+    answer,
+    sources: documents
+      .filter((doc) => doc.pageContent?.trim())
+      .map((doc, index) => ({
+        id: `D${index + 1}`,
+        content: doc.pageContent,
+        filename: doc.metadata?.filename ?? "Document",
+        page: doc.metadata?.pageNumber ?? null,
+        score: doc.score,
+      })),
+  };
 };
 
 export default generate;
