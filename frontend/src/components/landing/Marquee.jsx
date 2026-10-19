@@ -1,41 +1,31 @@
-import { motion } from "framer-motion";
 import React from "react";
 
-const items = ["We are Docly", "✦", "RAG Powered", "✦", "Ask. Explore.", "✦"];
+const CAPABILITIES = [
+  "Qdrant Vector Database",
+  "Page-Accurate Citations",
+  "Autonomous Web Fallback",
+  "Multi-Format (PDF & TXT)",
+  "Zero Hallucination Guardrails",
+  "Markdown & Code Support",
+  "User-Scoped Embeddings",
+  "Instant Semantic Retrieval",
+];
 
 function Marquee() {
   return (
-    <div className="w-full py-20 bg-[#FF6B35] overflow-hidden border-t border-b border-white/20">
-      <div className="flex whitespace-nowrap">
-        {[0, 1].map((copy) => (
-          <motion.div
-            key={copy}
-            className="flex shrink-0 items-center"
-            initial={{ x: "0%" }}
-            animate={{ x: "-100%" }}
-            transition={{ ease: "linear", repeat: Infinity, duration: 16 }}
-          >
-            {items.map((item, i) => (
-              <span
-                key={i}
-                className={`text-[10vw] font-Founders_Grotesk uppercase font-bold leading-none tracking-tighter mx-4 ${
-                  item === "✦"
-                    ? "text-white/40 text-[4vw]"
-                    : i % 4 === 2
-                    ? "text-transparent"
-                    : "text-[#1a1a1a]"
-                }`}
-                style={
-                  i % 4 === 2 && item !== "✦"
-                    ? { WebkitTextStroke: "2px #1a1a1a" }
-                    : {}
-                }
-              >
-                {item}
-              </span>
-            ))}
-          </motion.div>
-        ))}
+    <div className="w-full py-4 bg-gray-900 border-y border-gray-800 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8">
+        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-xs text-gray-300 font-medium">
+          {CAPABILITIES.map((cap, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center px-3 py-1 rounded-md bg-gray-800/80 border border-gray-700/60"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B35] mr-2 shrink-0" />
+              {cap}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );

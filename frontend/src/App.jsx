@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
@@ -7,10 +8,6 @@ import LandingPage from "./components/landing/LandingPage";
 import Marquee from "./components/landing/Marquee";
 import About from "./components/landing/About";
 import Eyes from "./components/landing/Eyes";
-
-import LocomotiveScroll from "locomotive-scroll";
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import ChatPage from "./pages/chat/ChatPage";
 
@@ -23,14 +20,6 @@ import ProtectedRoutes from "./protectRoutes/protectedRoutes";
 import PublicRoutes from "./protectRoutes/publicroutes";
 
 function App() {
-  useEffect(() => {
-    const locomotiveScroll = new LocomotiveScroll();
-
-    return () => {
-      locomotiveScroll.destroy();
-    };
-  }, []);
-
   return (
     <BrowserRouter>
       <Routes>
@@ -38,7 +27,7 @@ function App() {
         <Route
           path="/"
           element={
-            <div className="w-full text-white">
+            <div className="w-full min-h-screen bg-white text-gray-900 selection:bg-orange-100 selection:text-[#FF6B35]">
               <Navbar />
               <LandingPage />
               <Marquee />

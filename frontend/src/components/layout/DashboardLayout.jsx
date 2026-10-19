@@ -1,20 +1,14 @@
 import { Outlet } from "react-router-dom";
 import React from "react";
-import Navbar from "../layout/Navbar";
-import Footer from "./Footer";
-
-
 
 const DashboardLayout = () => {
   return (
-    <div>
-      <Navbar />
-      <main>
+    <div className="h-screen overflow-hidden">
+      <main className="h-full">
         <Outlet />
       </main>
-      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default DashboardLayout
+export default DashboardLayout;
